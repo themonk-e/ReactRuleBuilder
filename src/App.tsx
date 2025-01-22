@@ -174,18 +174,34 @@ const config: Config = {
           returnType: 'text',
           sqlFunc: 'Concat',
           tooltip:"Give values in this manner value , concatenation string+ value",
-          jsonLogic: "toLeft",
+          jsonLogic: "Concat",
           allowSelfNesting:true,
           args: {
             value1: {
               type: 'text',
               valueSources: ['value', 'field','func'],
+              defaultValue:''
             },
             value2: {
               type: 'text',
               valueSources: ['value', 'field','func'],
+               defaultValue:''
             },
-
+            value3: {
+              type: 'text',
+              valueSources: ['value', 'field','func'],
+               defaultValue:''
+            },
+            value4: {
+              type: 'text',
+              valueSources: ['value', 'field','func'],
+              defaultValue:''
+            },
+            value5: {
+              type: 'text',
+              valueSources: ['value', 'field','func'],
+               defaultValue:''
+            }
           }
       },
     }
