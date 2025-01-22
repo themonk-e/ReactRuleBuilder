@@ -1,121 +1,76 @@
 import React, { useState, useCallback } from "react";
-import { merge } from 'lodash'
-
-// import type { JsonGroup, Config, ImmutableTree, BuilderProps } from '@react-awesome-query-builder/bootstrap'; // for TS example
-// import { BootstrapConfig, BootstrapWidgets } from '@react-awesome-query-builder/bootstrap';
-// import "bootstrap/dist/css/bootstrap.min.css";
-// import '@react-awesome-query-builder/bootstrap/css/styles.css';
-
-// import { Utils as QbUtils, Query, Builder, BasicFuncs,JsonSwitchGroup } from '@react-awesome-query-builder/bootstrap';
-// import '@react-awesome-query-builder/ui/css/styles.css';
-// const InitialConfig = BootstrapConfig;
-
-
-// import type { JsonGroup, Config, ImmutableTree, BuilderProps } from '@react-awesome-query-builder/mui'; // for TS example
-// import { Utils as QbUtils, Query, Builder, BasicConfig,BasicFuncs,JsonSwitchGroup  } from '@react-awesome-query-builder/mui';
-// import { MuiConfig, MuiWidgets } from '@react-awesome-query-builder/mui';
-// import '@react-awesome-query-builder/mui/css/styles.css';
-
-
-import type { JsonGroup, Config, ImmutableTree, BuilderProps} from '@react-awesome-query-builder/antd'; // for TS example
-import { Query, Builder, Utils as QbUtils,JsonSwitchGroup,BasicFuncs } from '@react-awesome-query-builder/antd';
-import { AntdConfig, AntdWidgets } from '@react-awesome-query-builder/antd';
-
-
-
-import '@react-awesome-query-builder/antd/css/styles.css';
+import { merge } from "lodash";
+import {
+  Query,
+  Builder,
+  Utils as QbUtils,
+  JsonSwitchGroup,
+  BasicFuncs,
+  BuilderProps,
+  ImmutableTree,
+  Config
+} from "@react-awesome-query-builder/antd";
+import { AntdConfig } from "@react-awesome-query-builder/antd";
+import "@react-awesome-query-builder/antd/css/styles.css";
 import JsonShower from "./JsonShower";
+import { Col, Dropdown, MenuProps, Row, Space } from "antd";
+import { DownOutlined } from "@ant-design/icons";
+
+
+
+// Define initial config and tree
 const InitialConfig = AntdConfig;
+const emptyJson: JsonSwitchGroup = { id: QbUtils.uuid(), type: "switch_group" };
+const initialTree = QbUtils.loadTree(emptyJson);
 
 
+interface Field {
+  label: string;
+  type: string;
+}
 
-const emptyJson: JsonSwitchGroup = { id: QbUtils.uuid(), type: "switch_group", };
-const tree = QbUtils.loadTree(emptyJson);
+interface FieldObject {
+  id: number;
+  fields: Field[];
+}
+
+const fieldObjects: FieldObject[] = [
+  {
+    id: 1,
+    fields: [
+      { label: "[FIRSTNAME]", type: "text" },
+      { label: "LastName", type: "text" },
+      { label: "DateOfBirth", type: "text" },
+      { label: "AidCode", type: "text" },
+      { label: "Region", type: "text" },
+    ],
+  },
+  {
+    id: 2,
+    fields: [
+      { label: "FirstNM", type: "text" },
+      { label: "LastNM", type: "text" },
+      { label: "Benefit", type: "text" },
+      { label: "AidCode", type: "text" },
+      { label: "Region", type: "text" },
+    ],
+  },
+];
 
 
-const preStyle = { backgroundColor: "darkgrey", margin: "10px", padding: "10px" };
-const preErrorStyle = { backgroundColor: "lightpink", margin: "10px", padding: "10px" };
-
-
-// or import '@react-awesome-query-builder/ui/css/compact_styles.css';
-// const InitialConfig = MuiConfig;
-// <<<
-
-// You need to provide your own config. See below 'Config format'
 const config: Config = {
   ...InitialConfig,
   widgets:{
     ...InitialConfig.widgets
   },
 
-  fields: {
-    qty: {
-      label: "Qty",
-      type: "number",
-      fieldSettings: {
-        min: 0
-      },
-      valueSources: ["value"],
-      preferWidgets: ["number"]
-    },
-    price: {
-      label: "Price",
-      type: "number",
-      valueSources: ["value"],
-      fieldSettings: {
-        min: 10,
-        max: 100
-      },
-      preferWidgets: ["slider", "rangeslider"]
-    },
-    name: {
-      label: 'Name',
-      type: 'text',
-    },
-
-    MedicarestatA: {
-      label: 'Medicare stat A',
-      type: 'text',
-    },
-    AidCode: {
-      label: 'Aid Code',
-      type: 'text',
-    },
-
-
-    MedicarestatB: {
-      label: 'Medicare stat B',
-      type: 'text',
-    },
-    empgrp: {
-      label: 'EMPGROUP',
-      type: 'text',
-    },
-    color: {
-      label: "Color",
-      type: "select",
-      valueSources: ["value"],
-      fieldSettings: {
-        listValues: [
-          { value: "yellow", title: "Yellow" },
-          { value: "green", title: "Green" },
-          { value: "orange", title: "Orange" }
-        ]
-      }
-    },
-    is_promotion: {
-      label: "Promo?",
-      type: "boolean",
-      operators: ["equal"],
-      valueSources: ["value"]
-    }
-  },
+  fields: {},
+  
   funcs:{
      //...BasicFuncs
      string: {
       type: "!struct",
       label: "String",
-      tooltip: "String functions",
       subfields: {
         // LOWER: max length - 7
         // UPPER: max length - 6
@@ -240,7 +195,6 @@ const config: Config = {
     ...InitialConfig.settings,
 
     fieldSources: ["field", "func"],
-    
     caseValueField: {
       type: "text",
       valueSources: ["value","field","func"],
@@ -260,48 +214,76 @@ const config: Config = {
   }
 };
 
-// You can load query value from your backend storage (for saving see `Query.onChange()`)
-const queryValue: JsonGroup = { id: QbUtils.uuid(), type: "group" };
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+const updatedConfig = { ...config };
 const DemoQueryBuilder: React.FC = () => {
   const [state, setState] = useState({
-    tree: tree,
+    tree: initialTree,
     config: config,
     spelStr: "",
     spelErrors: [] as string[]
   });
 
-  const onChange = useCallback((immutableTree: ImmutableTree, config: Config) => {
-    // Tip: for better performance you can apply `throttle` - see `packages/examples/src/demo`
-    setState(prevState => ({ ...prevState, tree: immutableTree, config: config }));
+  const updateConfigFields = (fieldsFromWinForms: Field[]): void => {
+    const updatedFields = fieldsFromWinForms.reduce((acc: Record<string, Field>, field: Field) => {
+      acc[field.label] = field;
+      return acc;
+    }, {});
 
-    const jsonTree = QbUtils.getTree(immutableTree);
-    console.log(jsonTree);
-    // `jsonTree` can be saved to backend, and later loaded to `queryValue`
+    console.log(updatedFields);
+
+    updatedConfig.fields = updatedFields;
+    
+    const ternaryJsonLogic ={
+      "if": [
+        {
+          "and": [
+            {
+              "==": [
+                {
+                  "var": "LastName"
+                },
+                {
+                  "var": "AidCode"
+                }
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "DateOfBirth"
+                },
+                {
+                  "var": "LastName"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "var": "Region"
+        },
+        {
+          "var": "DateOfBirth"
+        }
+      ]
+    }
+    console.log(updatedConfig);
+
+    setState(prevState => ({ ...prevState,updatedConfig: updatedConfig }));
+
+     const treeFromJsonLogic: ImmutableTree = QbUtils.loadFromJsonLogic(ternaryJsonLogic, updatedConfig) as ImmutableTree;
+    
+      setState(prevState => ({ ...prevState,tree:treeFromJsonLogic }));
+
+  };
+
+  const onChange = useCallback((immutableTree: ImmutableTree, updatedConfig: Config) => {
+    setState(prevState => ({ ...prevState, tree: immutableTree, updatedConfig: updatedConfig }));
+    console.log(QbUtils.getTree(immutableTree));
   }, []);
 
   const renderBuilder = useCallback((props: BuilderProps) => (
@@ -312,35 +294,69 @@ const DemoQueryBuilder: React.FC = () => {
     </div>
   ), []);
 
-  const renderQueryBuilder = () => (
-    <Query
-      {...config}
-      value={state.tree}
-      onInit={onChange}
-      onChange={onChange}
-      renderBuilder={renderBuilder}
-    />
-  );
 
+  //json
   const renderJsonLogicBlock = () => {
     const {logic, data: logicData, errors: logicErrors} = QbUtils.jsonLogicFormat(state.tree, state.config);
 
     return (
-      <div style={{ padding: '20px' }}>
+      <div>
         <JsonShower logicErrors={logicErrors} logic={logic} />
       </div>
     );
+  }
+
+
+
+  //dropdowns
+  const [selectedObject, setSelectedObject] = useState<FieldObject | null>(null);
+
+  const items: MenuProps['items'] = fieldObjects.map((obj) => ({
+    key: obj.id.toString(),
+    label: `ID ${obj.id}`, // Label displayed in the dropdown
+  }));
+
+  const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
+    const selected = fieldObjects.find((obj) => obj.id.toString() === key);
+    setSelectedObject(selected || null);
+    console.log(selected); // Log the selected object to the console
+    if(selected){
+      updateConfigFields(selected.fields);
+    }
+   
   };
-  
+
   return (
     <div>
-      {renderQueryBuilder()}
-      <div className="query-builder-result">
-        {renderJsonLogicBlock()}
-      </div>
+
+   <Row justify="end" style={{ marginTop: '20px', marginRight: '40px', marginBottom:'100px'}}>
+        <Col>
+        <Dropdown menu={{
+      items,
+      selectable: true,
+      defaultSelectedKeys: ['1'],
+      onClick: handleMenuClick,
+    }}>
+            <Space>
+        Select
+        <DownOutlined />
+      </Space>
+  </Dropdown>
+        </Col>
+      </Row>
+
+      {/* <MissingMappingAlert></MissingMappingAlert> */}
+      <Query
+        {...updatedConfig}
+        value={state.tree}
+        onInit={onChange}
+        onChange={onChange}
+        renderBuilder={renderBuilder}
+      />
+      <div className="query-builder-result">{renderJsonLogicBlock()}</div>
+
     </div>
   );
 };
+
 export default DemoQueryBuilder;
-
-
