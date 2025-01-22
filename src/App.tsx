@@ -226,48 +226,8 @@ const DemoQueryBuilder: React.FC = () => {
 
     updatedConfig.fields = updatedFields;
     
-    const ternaryJsonLogic ={
-      "if": [
-        {
-          "and": [
-            {
-              "==": [
-                {
-                  "var": "LastName"
-                },
-                {
-                  "var": "AidCode"
-                }
-              ]
-            },
-            {
-              "==": [
-                {
-                  "var": "DateOfBirth"
-                },
-                {
-                  "var": "LastName"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "var": "Region"
-        },
-        {
-          "var": "DateOfBirth"
-        }
-      ]
-    }
-    console.log(updatedConfig);
-
+  
     setState(prevState => ({ ...prevState,updatedConfig: updatedConfig }));
-
-    // const treeFromJsonLogic: ImmutableTree = QbUtils.loadFromJsonLogic(ternaryJsonLogic, updatedConfig) as ImmutableTree;
-    
-    // setState(prevState => ({ ...prevState,tree:treeFromJsonLogic }));
-
   };
 
   window.receiveMessageFromWinForms = (message: string|object) => {
