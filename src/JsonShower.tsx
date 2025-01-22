@@ -1,12 +1,15 @@
+import { Button } from 'antd';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { SaveOutlined } from '@ant-design/icons';
+
 import { dracula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { Row, Col} from 'antd';
 
 interface JsonShowcaseProps {
     logicErrors?: any[];  
     logic?: any;  
   }
-
+    
 
   const customStyle = {
     ...dracula, // Start with the default Dracula theme for overall background and text colors
@@ -28,33 +31,61 @@ interface JsonShowcaseProps {
   };
   
   const JsonShowcase: React.FC<JsonShowcaseProps> = ({ logicErrors, logic }) => {
+
+    const sendRuleJSON = (json: string) => {
+      if (window.chrome?.webview) {
+        console.log(json);
+        window.chrome.webview.postMessage(json);
+      } else {
+        console.error('WebView is not available.');
+      }
+    };
+
+
+
     return (
-      <div style={{ fontFamily: 'Arial, sans-serif', margin: '20px', padding: '20px', backgroundColor: '#2e2e2e', borderRadius: '8px' }}>
+      <div>
+      <div
+        style={{
+          fontFamily: 'Arial, sans-serif',
+          margin: '20px',
+          padding: '20px',
+          backgroundColor: '#2e2e2e',
+          borderRadius: '8px',
+        }}
+      >
         <div>
-          <a 
-            href="http://jsonlogic.com/play.html" 
-            target="_blank" 
-            rel="noopener noreferrer" 
+          <a
+            href="http://jsonlogic.com/play.html"
+            target="_blank"
+            rel="noopener noreferrer"
             style={{
-              fontSize: '16px', 
-              color: '#00d1b2', 
-              textDecoration: 'none', 
+              fontSize: '16px',
+              color: '#00d1b2',
+              textDecoration: 'none',
               fontWeight: 'bold',
               marginBottom: '10px',
-              display: 'inline-block'
+              display: 'inline-block',
             }}
           >
             Rule JSON
           </a>
-          : 
-          { (logicErrors?.length || 0) > 0 && (
-            <div style={{ marginTop: '10px', backgroundColor: '#ffdddd', padding: '10px', borderRadius: '5px' }}>
+          :
+          {(logicErrors?.length || 0) > 0 && (
+            <div
+              style={{
+                marginTop: '10px',
+                backgroundColor: '#ffdddd',
+                padding: '10px',
+                borderRadius: '5px',
+              }}
+            >
               <SyntaxHighlighter language="json" style={customStyle}>
                 {JSON.stringify(logicErrors, undefined, 2)}
               </SyntaxHighlighter>
             </div>
           )}
-          { !!logic && (
+          {!!logic && (
             <div style={{ marginTop: '20px' }}>
               <SyntaxHighlighter language="json" style={customStyle}>
                 {JSON.stringify(logic, undefined, 2)}
@@ -64,6 +95,18 @@ interface JsonShowcaseProps {
         </div>
         <hr />
       </div>
+      <Row justify="end" style={{ marginTop: '20px', marginRight: '10px' }}>
+        <Col>
+        
+          <Button type="primary" 
+          icon={<SaveOutlined />}
+          style={{ backgroundColor: 'green', borderColor: 'green' }}
+          onClick={() => sendRuleJSON(JSON.stringify(logic, undefined, 2))}>
+            Save Rules
+          </Button>
+        </Col>
+      </Row>
+    </div>
     );
   };
   
