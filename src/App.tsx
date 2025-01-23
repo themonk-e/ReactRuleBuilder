@@ -243,7 +243,7 @@ const DemoQueryBuilder: React.FC = () => {
     spelErrors: [] as string[]
   });
 
-  const updateConfigFields = (fieldsFromWinForms: Field[]): void => {
+  const updateConfigFields = (fieldsFromWinForms: Field[],key:string): void => {
     const updatedFields = fieldsFromWinForms.reduce((acc: Record<string, Field>, field: Field) => {
       acc[field.label] = field;
       return acc;
@@ -287,11 +287,42 @@ const DemoQueryBuilder: React.FC = () => {
         }
       ]
     }
+
+    const ternaryLogic2={
+      "if": [
+        {
+          "and": [
+            {
+              "==": [
+                {
+                  "var": "FirstNM"
+                },
+                "Mahesh"
+              ]
+            },
+            {
+              "==": [
+                {
+                  "var": "Benefit"
+                },
+                "2025/01/20"
+              ]
+            }
+          ]
+        },
+        {
+          "var": "Region"
+        },
+        null
+      ]
+    }
     console.log(updatedConfig);
+
+    console.log(key);
 
     setState(prevState => ({ ...prevState,updatedConfig: updatedConfig }));
 
-     const treeFromJsonLogic: ImmutableTree = QbUtils.loadFromJsonLogic(ternaryJsonLogic, updatedConfig) as ImmutableTree;
+     const treeFromJsonLogic: ImmutableTree = key==="1"? QbUtils.loadFromJsonLogic(ternaryJsonLogic, updatedConfig) as ImmutableTree : QbUtils.loadFromJsonLogic(ternaryLogic2, updatedConfig) as ImmutableTree  ;
     
       setState(prevState => ({ ...prevState,tree:treeFromJsonLogic }));
 
@@ -337,7 +368,7 @@ const DemoQueryBuilder: React.FC = () => {
     setSelectedObject(selected || null);
     console.log(selected); // Log the selected object to the console
     if(selected){
-      updateConfigFields(selected.fields);
+      updateConfigFields(selected.fields,key);
     }
    
   };
