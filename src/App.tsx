@@ -234,7 +234,7 @@ const config: Config = {
 
 
 
-const updatedConfig = { ...config };
+let updatedConfig = { ...config };
 const DemoQueryBuilder: React.FC = () => {
   const [state, setState] = useState({
     tree: initialTree,
@@ -251,7 +251,10 @@ const DemoQueryBuilder: React.FC = () => {
 
     console.log(updatedFields);
 
-    updatedConfig.fields = updatedFields;
+    updatedConfig = {
+      ...updatedConfig,
+      fields: updatedFields
+    };
     
     const ternaryJsonLogic ={
       "if": [
@@ -295,27 +298,43 @@ const DemoQueryBuilder: React.FC = () => {
             {
               "==": [
                 {
-                  "var": "FirstNM"
+                  "toLowerCase": [
+                    {
+                      "var": "LastNM"
+                    }
+                  ]
                 },
-                "Mahesh"
+                {
+                  "var": "Region"
+                }
               ]
             },
             {
               "==": [
                 {
-                  "var": "Benefit"
+                  "toUpperCase": [
+                    {
+                      "var": "LastNM"
+                    }
+                  ]
                 },
-                "2025/01/20"
+                {
+                  "toLeft": [
+                    {
+                      "var": "LastNM"
+                    },
+                    2
+                  ]
+                }
               ]
             }
           ]
         },
-        {
-          "var": "Region"
-        },
-        null
+        "Text",
+        "text"
       ]
-    }
+    }    
+    
     console.log(updatedConfig);
 
     console.log(key);
