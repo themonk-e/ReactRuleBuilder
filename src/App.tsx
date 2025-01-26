@@ -38,7 +38,7 @@ const fieldObjects: FieldObject[] = [
   {
     id: 1,
     fields: [
-      { label: "[FIRSTNAME]", type: "text" },
+      { label: "[FIRSTNAME]", type: "text"},
       { label: "LastName", type: "text" },
       { label: "DateOfBirth", type: "text" },
       { label: "AidCode", type: "text" },
@@ -214,12 +214,6 @@ const config: Config = {
     caseValueField: {
       type: "text",
       valueSources: ["value","field","func"],
-      fieldSettings: {
-        listValues: [
-          { value: "tag1", title: "Tag #1" },
-          { value: "tag2", title: "Tag #2" },
-        ],
-      },
       mainWidgetProps: {
         valueLabel: "Then",
         valuePlaceholder: "Then",
@@ -330,8 +324,8 @@ const DemoQueryBuilder: React.FC = () => {
             }
           ]
         },
-        "Text",
-        "text"
+        "ThenValue",
+        "DefaultValue"
       ]
     }    
     
