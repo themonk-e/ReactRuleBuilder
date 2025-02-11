@@ -27,6 +27,7 @@ const initialTree = QbUtils.loadTree(emptyJson);
 interface Field {
   label: string;
   type: string;
+  hideForSelect:boolean;
 }
 
 interface FieldObject {
@@ -38,21 +39,21 @@ const fieldObjects: FieldObject[] = [
   {
     id: 1,
     fields: [
-      { label: "[FIRSTNAME]", type: "text"},
-      { label: "LastName", type: "text" },
-      { label: "DateOfBirth", type: "text" },
-      { label: "AidCode", type: "text" },
-      { label: "Region", type: "text" },
+      { label: "[FIRSTNAME]", type: "text",hideForSelect:true},
+      { label: "LastName", type: "text",hideForSelect:false },
+      { label: "DateOfBirth", type: "text",hideForSelect:false },
+      { label: "AidCode", type: "text",hideForSelect:false },
+      { label: "Region", type: "text",hideForSelect:false },
     ],
   },
   {
     id: 2,
     fields: [
-      { label: "FirstNM", type: "text" },
-      { label: "LastNM", type: "text" },
-      { label: "Benefit", type: "text" },
-      { label: "AidCode", type: "text" },
-      { label: "Region", type: "text" },
+      { label: "FirstNM", type: "text",hideForSelect:true},
+      { label: "LastNM", type: "text",hideForSelect:false },
+      { label: "Benefit", type: "text",hideForSelect:false },
+      { label: "AidCode", type: "text",hideForSelect:false },
+      { label: "Region", type: "text",hideForSelect:false },
     ],
   },
 ];
